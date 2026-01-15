@@ -55,9 +55,13 @@ typedef struct {
     int quantidade; // Contador de controle. Ele informa qunatos itens estão realmente armazenados na lista
 } listaEstatica;
 
-typedef struct {
-    char dados[max_itens][max_string];
+typedef struct No {
+    char dados[max_string];   // UM item: "banana"
+    struct No *proximo;       // aponta para o próximo item
+} No;
 
+typedef struct{
+    No *inicio;
     int quantidade;
 } listaDinamica;
 
@@ -153,6 +157,38 @@ void listarListaEstatica(const listaEstatica *lista){
     printf("] \n");
 }
 
+// Criando cunções de lista Dinâmicas
+void inicializarListaDinamica(listaDinamica *lista){ // Iniciando a quantidade de intens na lista dinâmica
+    lista->quantidade = 0;
+}
+
+void inserirListaDinamica(listaDinamica *lista, const char * texto){
+    
+    // Cria um novo nó na memória dinâmica
+    // "malloc" reserva espaço suficiente para armazenar um nó completo (dados + ponteiro para próximo)
+    No *novo = malloc(sizeof(No));
+
+    // Copia o texto fornecido pelo usuário para o campo 'dados' do novo nó
+    // Cada nó armazena sua própria string
+    strcpy(novo->dados, texto);
+
+    // Faz o novo nó apontar para o antigo início da lista
+    // Isso garante que os nós existentes não sejam perdidos
+    // Visualmente:
+    // Antes: inicio -> banana -> maça -> NULL
+    // Novo nó: novo -> ?
+    // Após esta linha: novo -> banana -> maça -> NULL
+    novo->proximo = lista->inicio;
+
+    // Atualiza o início da lista para o novo nó
+    // Agora o novo nó é o primeiro da lista
+    // Exemplo final:
+    // inicio -> pera -> banana -> maça -> NULL
+    lista->inicio = novo;
+
+    // Atualiza a quantidade de nós na lista (opcional, mas útil para menus e validações)
+    lista->quantidade++;
+}
 
 // Funções de Menu
 void menuEstatico(){
