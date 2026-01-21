@@ -159,7 +159,8 @@ void listarListaEstatica(const listaEstatica *lista){
 
 // Criando cunções de lista Dinâmicas
 void inicializarListaDinamica(listaDinamica *lista){ // Iniciando a quantidade de intens na lista dinâmica
-    lista->quantidade = 0;
+    lista->inicio       = NULL;
+    lista->quantidade   = 0;
 }
 
 void inserirListaDinamica(listaDinamica *lista, const char * texto){
@@ -186,14 +187,41 @@ void inserirListaDinamica(listaDinamica *lista, const char * texto){
     // inicio -> pera -> banana -> maça -> NULL
     lista->inicio = novo;
 
+    // Printando a informação
+    printf("O texto \"%s\" foi iserido com sucesso!! \n");
+
     // Atualiza a quantidade de nós na lista (opcional, mas útil para menus e validações)
     lista->quantidade++;
 }
+
+void listarListaDinamica(listaDinamica *lista) {
+    if (lista->inicio == NULL) {
+        printf("Lista vazia!\n");
+        return;
+    }
+
+    No *atual = lista->inicio;
+    printf("Itens da lista: [");
+
+    while (atual != NULL) {
+        printf("%s", atual->dados);
+        if (atual->proximo != NULL) {
+            printf(", ");
+        }
+        atual = atual->proximo; // vai para o próximo nó
+    }
+
+    printf("]\n");
+}
+
+
 
 // Funções de Menu
 void menuEstatico(){
 
     int opcao;
+    inicialiarListaEstatica(&estaticaLista);
+
 
     do{
         printf("\n------------------------------- \n");
@@ -273,11 +301,68 @@ void menuEstatico(){
     } while(opcao != 0);
 }
 
+void menuDinamico(){
+    int opcao;
+
+    dinamicaLista = malloc(sizeof(listaDinamica));
+    inicializarListaDinamica(dinamicaLista);
+
+    do {
+        printf("\n------------------------------- \n");
+        printf("--Sistema de Lista Estática--\n");
+        printf("1 - Para adicionar itens na lisata\n");
+        printf("2 - Para remover itens da lista\n");
+        printf("3 - Para listar os itens da lista\n");
+        printf("0 - Para sair do sistema de LIsta Dinâmica\n");
+        scanf("%d", &opcao);
+        printf("------------------------------- \n");
+    
+        limparBuffer();
+
+        switch (opcao)
+        {
+            case (0):{
+                printf("Saiu do sistem de lista Dinâmicas!! \n");
+                free(dinamicaLista);
+                break;
+            }
+            break;
+        
+            case(1):{
+                char texto[max_string];
+
+                printf("\n------------------------------- \n");
+                printf("--Sistema de Adicionar Itens\n");
+                printf("Adicione um item: ");
+                fgets(texto, max_string, stdin);
+                texto[strcspn(texto, "\n")] = '\0';
+
+                inserirListaDinamica(dinamicaLista, texto);
+                printf("------------------------------- \n");
+            }
+            break;
+
+            case(2):{
+                printf("Sistema de excluir item na lista (ainda não feito) \n");
+            }break;
+
+            case(3):{
+                printf("\n------------------------------- \n");
+                listarListaDinamica(dinamicaLista);
+                printf("------------------------------- \n");
+            }break;
+
+            default:
+            break;
+        }
+
+    } while (opcao != 0);
+}
+
 int main(){
 
     int opcao;
-    inicialiarListaEstatica(&estaticaLista);
-
+    
     do {
         printf("\n---------------------\n");
         printf("--Sistema de Listas--\n");
@@ -299,6 +384,10 @@ int main(){
             
             case(1):{
                 menuEstatico();
+            }break;
+
+            case(2):{
+                menuDinamico();
             }break;
 
             default:
